@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>آزمون غربالگری افسردگی (بک)</title>
+    <style>
+        @font-face { font-family: 'Vazirmatn'; src: url('./static/mycustomfonts/Vazirmatn-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'Vazirmatn'; src: url('./static/mycustomfonts/Vazirmatn-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+        
+        :root { --primary: #007bff; --primary-hover: #0056b3; --success: #28a745; --success-hover: #218838; --danger: #dc3545; --warning: #ffc107; --bg-color: #eef2f7; --card-bg: #ffffff; --text-main: #2c3e50; --text-muted: #6c757d; --border-color: #dee2e6; --shadow-md: 0 8px 24px rgba(149, 157, 165, 0.2); --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 650px; background: var(--card-bg); padding: 35px; border-radius: 20px; box-shadow: var(--shadow-md); display: none; position: relative; overflow: hidden; }
+        .container.active { display: block; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        h1 { font-size: 1.6rem; color: var(--primary); text-align: center; margin-bottom: 10px; font-weight: 700; }
+        h3 { font-size: 1rem; color: var(--text-muted); text-align: center; margin-bottom: 30px; font-weight: 400; line-height: 1.5; }
+        .btn { display: inline-flex; justify-content: center; align-items: center; padding: 14px 24px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: var(--transition); color: white; text-decoration: none; width: 100%; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--success); box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); }
+        .btn-primary:hover { background: var(--success-hover); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); transform: translateY(-2px); }
+        .btn-nav { background: #f1f3f5; color: var(--text-main); border: 1px solid var(--border-color); width: 48%; font-size: 1rem; }
+        .btn-nav:hover:not(:disabled) { background: #e2e6ea; }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        .progress-wrapper { margin-bottom: 25px; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+        .progress-track { width: 100%; height: 10px; background: #e9ecef; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); border-radius: 10px; transition: width 0.4s ease; width: 0%; }
+        .question-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 25px; line-height: 1.6; color: var(--text-main); animation: fadeIn 0.4s ease; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-card { display: flex; align-items: center; padding: 16px 20px; background: #fff; border: 2px solid var(--border-color); border-radius: 14px; cursor: pointer; transition: var(--transition); position: relative; }
+        .option-card:hover { border-color: #b3d7ff; background: #f0f8ff; }
+        .option-card.selected { border-color: var(--success); background: #d4edda; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15); }
+        .option-card input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .custom-radio { width: 22px; height: 22px; border: 2px solid #adb5bd; border-radius: 50%; margin-left: 15px; display: inline-block; position: relative; transition: var(--transition); }
+        .option-card.selected .custom-radio { border-color: var(--success); }
+        .option-card.selected .custom-radio::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background: var(--success); border-radius: 50%; }
+        .option-text { font-size: 1.05rem; color: var(--text-main); font-weight: 400; }
+        .option-card.selected .option-text { font-weight: 700; color: #155724; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; gap: 10px; }
+        .alert-info { background: #e7f3fe; color: #0c5460; padding: 15px; border-radius: 12px; text-align: center; font-size: 0.9rem; margin-bottom: 25px; border: 1px solid #bee5eb; line-height: 1.6; }
+        .score-card { text-align: center; background: #fff; padding: 30px 20px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px; }
+        .score-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
+        .score-value { font-size: 3rem; font-weight: 700; color: var(--primary); line-height: 1; animation: pulseGlow 2s infinite; }
+        .recommendation-card { padding: 25px; border-radius: 16px; border-right: 6px solid; background: #fafafa; margin-bottom: 25px; }
+        .recommendation-card.mild { border-color: var(--success); background: #f0fdf4; }
+        .recommendation-card.moderate { border-color: var(--warning); background: #fffbeb; }
+        .recommendation-card.severe { border-color: var(--danger); background: #fef2f2; }
+        .rec-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; }
+        .mild .rec-title { color: var(--success); }
+        .moderate .rec-title { color: #b7791f; }
+        .severe .rec-title { color: var(--danger); }
+        .actions-grid { display: flex; gap: 15px; flex-wrap: wrap; }
+        .actions-grid .btn { flex: 1; min-width: 140px; background: #6c757d; }
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulseGlow { 0% { transform: scale(1); text-shadow: 0 0 0 rgba(0,123,255,0); } 50% { transform: scale(1.05); text-shadow: 0 0 20px rgba(0,123,255,0.4); } 100% { transform: scale(1); text-shadow: 0 0 0 rgba(0,123,255,0); } }
+        @media (max-width: 576px) { body { padding: 10px; align-items: flex-start; } .container { padding: 20px; margin-top: 10px; } h1 { font-size: 1.3rem; } .nav-buttons { flex-direction: column-reverse; } .btn-nav { width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="container active">
+        <h1>🧠 آزمون غربالگری افسردگی (بک)</h1>
+        <h3>لطفاً به سوالات زیر با دقت پاسخ دهید. اطلاعات شما به صورت کاملاً ناشناس ثبت می‌شود.</h3>
+        <button class="btn btn-primary" onclick="startQuiz()">شروع آزمون</button>
+    </div>
+
+    <div id="quiz-screen" class="container">
+        <div class="progress-wrapper">
+            <div class="progress-info">
+                <span id="progress-text">سوال 1 از 21</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="progress-bar"></div></div>
+        </div>
+        <div class="question-title" id="question-text">متن سوال...</div>
+        <div class="options-list" id="options-container"></div>
+        <div class="nav-buttons">
+            <button class="btn btn-nav" id="btn-prev" onclick="prevQuestion()">سوال قبل</button>
+            <button class="btn btn-nav" id="btn-next" onclick="nextQuestion()">سوال بعد</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="container">
+        <div class="alert-info">ℹ️ این آزمون یک ابزار غربالگری است و جایگزین تشخیص قطعی پزشک نیست.</div>
+        <div class="score-card">
+            <div class="score-title">نمره افسردگی شما</div>
+            <div class="score-value" id="result-score">0</div>
+            <div style="font-size: 1rem; color: var(--text-muted); margin-top: 10px;">از 63 امتیاز</div>
+        </div>
+        <div class="recommendation-card" id="recommendation-box">
+            <div class="rec-title" id="rec-title">وضعیت</div>
+        </div>
+        <div class="actions-grid">
+            <button class="btn" onclick="location.reload()">شروع مجدد</button>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ لینک Apps Script افسردگی را اینجا قرار دهید ⚠️
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1uKXsvi9iIoSjuD8T2gn1Qx5YXAP8MVQf62A_CowElb_poHo6Dxs1H0jbV9DpdhP0/exec";
+
+        // ۲۱ سوال استاندارد بک (خلاصه شده برای غربالگری)
+        const questions = [
+            "احساس غم و اندوه می‌کنم.", "به آینده بدبین هستم.", "احساس شکست می‌کنم.", "از چیزهایی که قبلاً لذت می‌بردم، لذت نمی‌برم.",
+            "احساس گناه می‌کنم.", "احساس می‌کنم مجازات خواهم شد.", "از خودم ناامید شده‌ام.", "خودم را به خاطر همه چیز سرزنش می‌کنم.",
+            "به خودکشی فکر می‌کنم.", "بیشتر از حد معمول گریه می‌کنم.", "احساس بی‌قراری می‌کنم.", "علاقه‌ام به دیگران را از دست داده‌ام.",
+            "در تصمیم‌گیری مشکل دارم.", "احساس بی‌ارزشی می‌کنم.", "انرژی خود را از دست داده‌ام.", "الگوی خوابم تغییر کرده است.",
+            "به راحتی عصبانی می‌شوم.", "اشتهایم تغییر کرده است.", "در تمرکز مشکل دارم.", "احساس خستگی مفرط می‌کنم.", "علاقه‌ام به فعالیت‌های روزمره کم شده است."
+        ];
+
+        const optionsData = [
+            { text: "اصلاً", value: 0 }, { text: "کمی", value: 1 }, { text: "تا حدی", value: 2 }, { text: "خیلی زیاد", value: 3 }
+        ];
+
+        let answers = new Array(21).fill(null);
+        let currentIndex = 0;
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const progressPercent = ((currentIndex) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+            document.getElementById('progress-percent').innerText = `${Math.round(progressPercent)}%`;
+            document.getElementById('progress-text').innerText = `سوال ${currentIndex + 1} از ${questions.length}`;
+            document.getElementById('question-text').innerText = `${currentIndex + 1}. ${questions[currentIndex]}`;
+
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+            
+            optionsData.forEach(opt => {
+                const label = document.createElement('label');
+                label.className = 'option-card';
+                if (answers[currentIndex] === opt.value) label.classList.add('selected');
+
+                const radio = document.createElement('input');
+                radio.type = 'radio'; radio.name = 'q_option'; radio.value = opt.value;
+                radio.checked = (answers[currentIndex] === opt.value);
+                
+                label.onclick = (e) => {
+                    e.preventDefault();
+                    radio.checked = true;
+                    answers[currentIndex] = opt.value;
+                    document.querySelectorAll('.option-card').forEach(l => l.classList.remove('selected'));
+                    label.classList.add('selected');
+
+                    if (currentIndex < questions.length - 1) {
+                        setTimeout(() => nextQuestion(true), 450); 
+                    }
+                };
+
+                const customRadio = document.createElement('div');
+                customRadio.className = 'custom-radio';
+                const span = document.createElement('span');
+                span.className = 'option-text'; span.innerText = opt.text;
+
+                label.appendChild(customRadio); label.appendChild(span); optsContainer.appendChild(label);
+            });
+
+            document.getElementById('btn-prev').disabled = (currentIndex === 0);
+            const btnNext = document.getElementById('btn-next');
+            if (currentIndex === questions.length - 1) {
+                btnNext.innerText = "مشاهده نتیجه ✓";
+                btnNext.style.background = "var(--success)";
+                btnNext.style.color = "white";
+            } else {
+                btnNext.innerText = "سوال بعد";
+                btnNext.style.background = "#f1f3f5";
+                btnNext.style.color = "var(--text-main)";
+            }
+        }
+
+        function nextQuestion(auto = false) {
+            if (!auto && answers[currentIndex] === null) return alert("لطفاً یک گزینه را انتخاب کنید.");
+            if (currentIndex < questions.length - 1) {
+                currentIndex++; renderQuestion();
+            } else { finishQuiz(); }
+        }
+
+        function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+        function finishQuiz() {
+            if (answers.includes(null)) return alert("لطفاً به تمام سوالات پاسخ دهید.");
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const totalScore = answers.reduce((a, b) => a + b, 0);
+            document.getElementById('result-score').innerText = totalScore;
+
+            const box = document.getElementById('recommendation-box');
+            const title = document.getElementById('rec-title');
+            box.className = 'recommendation-card';
+
+            if (totalScore <= 10) {
+                box.classList.add('mild');
+                title.innerText = "🟢 وضعیت: طبیعی یا افسردگی خفیف";
+            } else if (totalScore <= 20) {
+                box.classList.add('moderate');
+                title.innerText = "🟡 وضعیت: افسردگی متوسط (توصیه به مشاوره)";
+            } else {
+                box.classList.add('severe');
+                title.innerText = "🔴 وضعیت: افسردگی شدید (نیاز به مراجعه فوری به پزشک)";
+            }
+
+            sendDataToGoogleSheet(totalScore);
+        }
+
+        function sendDataToGoogleSheet(score) {
+            if (GOOGLE_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbz1uKXsvi9iIoSjuD8T2gn1Qx5YXAP8MVQf62A_CowElb_poHo6Dxs1H0jbV9DpdhP0/exec" || !GOOGLE_SCRIPT_URL) return;
+            const formData = new URLSearchParams();
+            formData.append("score", score);
+            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' })
+            .then(() => console.log("Saved")).catch(err => console.error(err));
+        }
+    </script>
+</body>
+</html>
