@@ -212,12 +212,26 @@
         }
 
         function sendDataToGoogleSheet(score) {
-            if (GOOGLE_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyCDDZkOTfrWg1sFXgpZ4r_hUAQu7hXsBOC5HSUeVzCnZsUHLwyZOiRBz3SieUoUaQh/exec" || !GOOGLE_SCRIPT_URL) return;
-            const formData = new URLSearchParams();
-            formData.append("score", score);
-            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' })
-            .then(() => console.log("Saved")).catch(err => console.error(err));
+            if (GOOGLE_SCRIPT_URL === "YOUR_GOOGLE_SCRIPT_URL_HERE" || !GOOGLE_SCRIPT_URL) return;
+            
+            // ساخت یک فرم مخفی برای ارسال مطمئن به گوگل
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = GOOGLE_SCRIPT_URL;
+            form.target = 'hidden_iframe'; // ارسال به آی‌فریم مخفی
+            
+            const scoreInput = document.createElement('input');
+            scoreInput.type = 'hidden';
+            scoreInput.name = 'score';
+            scoreInput.value = score;
+            
+            form.appendChild(scoreInput);
+            document.body.appendChild(form);
+            form.submit(); // ارسال فرم
+            document.body.removeChild(form); // پاک کردن فرم از صفحه
         }
     </script>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+    
 </body>
 </html>
