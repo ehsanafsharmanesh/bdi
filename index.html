@@ -99,7 +99,7 @@
 
     <script>
         // ⚠️ لینک Apps Script افسردگی را اینجا قرار دهید ⚠️
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8vj1SSKmLStxqVUhVQii7xQMjP27sX03u9Xx4HgKr7kHkAy5Ih6sQz62rsQLuCAio/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCDDZkOTfrWg1sFXgpZ4r_hUAQu7hXsBOC5HSUeVzCnZsUHLwyZOiRBz3SieUoUaQh/exec";
 
         // ۲۱ سوال استاندارد بک (خلاصه شده برای غربالگری)
         const questions = [
@@ -212,7 +212,7 @@
         }
 
         function sendDataToGoogleSheet(score) {
-            if (GOOGLE_SCRIPT_URL === "https://script.google.com/macros/s/AKfycby8vj1SSKmLStxqVUhVQii7xQMjP27sX03u9Xx4HgKr7kHkAy5Ih6sQz62rsQLuCAio/exec" || !GOOGLE_SCRIPT_URL) return;
+            if (GOOGLE_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyCDDZkOTfrWg1sFXgpZ4r_hUAQu7hXsBOC5HSUeVzCnZsUHLwyZOiRBz3SieUoUaQh/exec" || !GOOGLE_SCRIPT_URL) return;
             const formData = new URLSearchParams();
             formData.append("score", score);
             fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' })
